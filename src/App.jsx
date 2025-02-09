@@ -51,9 +51,9 @@ export default function App() {
         ...selectedCards,
       ]);
 
-      if (turn === 1 && matchingCards.length > 0) {
+      if (turn === 1 ) {
         setPlayer1Score((currScore) => currScore + 1);
-      } else if (turn === 2 && matchingCards.length > 0) {
+      } else if (turn === 2 ) {
         setPlayer2Score((currScore) => currScore + 1);
       }
     }
