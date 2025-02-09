@@ -37,9 +37,9 @@ export default function App() {
       setCelebrations(true);
       setTimeout(() => setCelebrations(false), 2000);
     }
-    if (turn === 1 ) {
+    if (turn === 1 && matchingCards.length>0 ) {
       setPlayer1Score((currScore) => currScore + 1);
-    } else if (turn === 2) {
+    } else if (turn === 2 && matchingCards.length>0) {
       setPlayer2Score((currScore) => currScore + 1);
     }
     playBeep();
@@ -84,7 +84,6 @@ export default function App() {
     setPlayer2Score(0);
     setSelectedCards([]);
     setMatchingCards([]);
- 
     playBeep();
     fetchData();
   };
