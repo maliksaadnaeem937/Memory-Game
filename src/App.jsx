@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import MemoryCard from "./Components/MemoryCard";
+import correctSound from "./sounds/correct.mp3";
+import wrongSound from "./sounds/wrong.wav";
 import RegularButton from "./Components/RegularButton";
 import useFetch from "./Components/Hooks/useFetch";
 import LoadingSpinner from "./Components/LoadingSpinner";
@@ -9,6 +11,14 @@ import ScoreCard from "./Components/ScoreCard";
 import Header from "./Components/Header";
 import Celebrations from "./Components/Celebrations";
 export default function App() {
+  const playCorrectSound = () => {
+    let correctAudio = new Audio(correctSound);
+    correctAudio.play();
+  };
+  const playWrongSound = () => {
+    const audio = new Audio(wrongSound);
+    audio.play();
+  };
   const { data, loading, error, fetchData } = useFetch();
   const [selectedCards, setSelectedCards] = useState([]);
   const [matchingCards, setMatchingCards] = useState([]);
@@ -17,28 +27,17 @@ export default function App() {
   const [player1Score, setPlayer1Score] = useState(0);
   const [player2Score, setPlayer2Score] = useState(0);
   const [celebrations, setCelebrations] = useState(false);
-  const playBeep = () => {
-    const context = new (window.AudioContext || window.webkitAudioContext)();
-    const oscillator = context.createOscillator();
-    oscillator.type = "sine";
-    oscillator.frequency.setValueAtTime(1000, context.currentTime);
-    oscillator.connect(context.destination);
-    oscillator.start();
-    oscillator.stop(context.currentTime + 0.2);
-  };
+
   useEffect(() => {
     if (!data) return;
     if (matchingCards.length === data?.length) {
-      playBeep();
-
       setIsGameOver(true);
+      playCorrectSound();
     }
     if (matchingCards.length != data?.length) {
       setCelebrations(true);
       setTimeout(() => setCelebrations(false), 2000);
     }
-
-    playBeep();
   }, [matchingCards]);
 
   useEffect(() => {
@@ -50,19 +49,24 @@ export default function App() {
         ...prevMatcingCards,
         ...selectedCards,
       ]);
-
-      if (turn === 1 ) {
+      playCorrectSound();
+      if (turn === 1) {
         setPlayer1Score((currScore) => currScore + 1);
-      } else if (turn === 2 ) {
+      } else if (turn === 2) {
         setPlayer2Score((currScore) => currScore + 1);
       }
     }
     if (selectedCards.length === 2) {
       setTurn((prevTurn) => (prevTurn === 1 ? 2 : 1));
     }
+    if (
+      selectedCards.length === 2 &&
+      selectedCards[0].name !== selectedCards[1].name
+    ) {
+      playWrongSound();
+    }
   }, [selectedCards]);
   const turnCard = (index, name) => {
-    console.log("turn card");
     let found = false;
     selectedCards.forEach((object) => {
       if (object.name === name && object.index === index) {
@@ -85,7 +89,7 @@ export default function App() {
     setPlayer2Score(0);
     setSelectedCards([]);
     setMatchingCards([]);
-    playBeep();
+    playCorrectSound();
     fetchData();
   };
 
