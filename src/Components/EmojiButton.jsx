@@ -6,9 +6,14 @@ export default function EmojiButton({
   handleClick,
   index,
   name,
+  disable, 
 }) {
   return (
-    <button className={style} onClick={() => handleClick(index, name)}>
+    <button 
+      className={style} 
+      onClick={() => handleClick(index, name)} 
+      disabled={disable} 
+    >
       {content}
     </button>
   );
