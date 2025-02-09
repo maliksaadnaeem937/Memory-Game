@@ -20,28 +20,24 @@ export default function App() {
   const playBeep = () => {
     const context = new (window.AudioContext || window.webkitAudioContext)();
     const oscillator = context.createOscillator();
-    oscillator.type = "sine"; 
-    oscillator.frequency.setValueAtTime(1000, context.currentTime); 
+    oscillator.type = "sine";
+    oscillator.frequency.setValueAtTime(1000, context.currentTime);
     oscillator.connect(context.destination);
     oscillator.start();
-    oscillator.stop(context.currentTime + 0.2); 
-  }
+    oscillator.stop(context.currentTime + 0.2);
+  };
   useEffect(() => {
-    if(!data) return;
+    if (!data) return;
     if (matchingCards.length === data?.length) {
       playBeep();
-      
-       setIsGameOver(true);
+
+      setIsGameOver(true);
     }
     if (matchingCards.length != data?.length) {
       setCelebrations(true);
       setTimeout(() => setCelebrations(false), 2000);
     }
-    if (turn === 1 && matchingCards.length>0 ) {
-      setPlayer1Score((currScore) => currScore + 1);
-    } else if (turn === 2 && matchingCards.length>0) {
-      setPlayer2Score((currScore) => currScore + 1);
-    }
+
     playBeep();
   }, [matchingCards]);
 
@@ -54,7 +50,12 @@ export default function App() {
         ...prevMatcingCards,
         ...selectedCards,
       ]);
-     
+
+      if (turn === 1 && matchingCards.length > 0) {
+        setPlayer1Score((currScore) => currScore + 1);
+      } else if (turn === 2 && matchingCards.length > 0) {
+        setPlayer2Score((currScore) => currScore + 1);
+      }
     }
     if (selectedCards.length === 2) {
       setTurn((prevTurn) => (prevTurn === 1 ? 2 : 1));
